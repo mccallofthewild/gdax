@@ -1,0 +1,9 @@
+name: gdax
+version: 0.1.0
+
+authors:
+  - mccallofthewild <mccallalexander96@gmail.com>
+
+crystal: 0.23.1
+
+license: MIT
