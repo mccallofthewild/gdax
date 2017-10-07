@@ -2,6 +2,8 @@
 /lib/
 /bin/
 /.shards/
+.gdax_keys.yml
+.gdax_keys.sh
 .DS_Store
 # Libraries don't need dependency lock
 # Dependencies will be locked in application that uses them
