@@ -3,8 +3,9 @@ require "openssl/hmac"
 
 module GDAX
 
+
   # Signs requests for GDAX Authentication. See GDAX's [ _Signing a Message_ ](https://docs.gdax.com/#signing-a-message).
-  class RequestSigner
+  class Auth
 
     @key : String
     @secret : String
@@ -37,6 +38,17 @@ module GDAX
       hash  = OpenSSL::HMAC.digest(:sha256, secret, what)
       Base64.strict_encode(hash)
     end
+
+    # Returns full, signed authentication object as a Hash
+    def obj(request_path="", body : String | Hash = "", timestamp : Int64 = Time.now.epoch, method="GET")
+      return {
+        "CB-ACCESS-KEY" => @key,
+        "CB-ACCESS-PASSPHRASE" => @passphrase,
+        "CB-ACCESS-TIMESTAMP" => timestamp,
+        "CB-ACCESS-SIGN" => signature request_path, body, timestamp, method
+      }
+    end
+
 
   end
 

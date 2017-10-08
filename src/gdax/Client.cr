@@ -12,10 +12,12 @@ module GDAX
     DEFAULT_SANDBOX_HOST = "https://api-public.sandbox.gdax.com"
 
 
+    # `host` is the host uri string. This defaults to `DEFAULT_PRODUCTION_HOST` if `production` is not set to false.
     def initialize(
-      @host = default_host()
+      @host = default_host(),
+      production = true
     )
-      super
+      super @host
     end
 
     private def default_host

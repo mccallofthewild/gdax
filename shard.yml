@@ -4,6 +4,9 @@ version: 0.1.0
 authors:
   - mccallofthewild <mccallalexander96@gmail.com>
 
+description: |
+  Use the GDAX API to trade blockchain cryptocurrencies like bitcoin, Litecoin and Ethereum.
+
 crystal: 0.23.1
 
 license: MIT
