@@ -37,7 +37,7 @@ module GDAX
     # 
     # `headers` are any additional headers you would like to add to the connection.
     # 
-    # If `production` is true, sandbox URI will be used by default.
+    # If `production` is false, sandbox URI will be used by default.
     # 
     # `auth` can be passed to [sign/authenticate over WebSockets](https://docs.gdax.com/#subscribe).
     def initialize(
@@ -80,8 +80,10 @@ module GDAX
     end
 
     # alias to `HTTP::WebSocket`'s `on_close` method.
-    def on_close(*args)
-      @ws.on_close(*args)
+    def on_close(&on_close : String -> )
+      @ws.on_close do |close_message|
+        on_close.call close_message 
+      end
     end
 
     # Adds event listener for events based on [ _GDAX's message `type`'s_ ](https://docs.gdax.com/#protocol-overview).

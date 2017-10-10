@@ -2,10 +2,18 @@ require "http"
 
 module GDAX
 
-  # An `HTTP::Client` for interacting with the [GDAX Client API](https://docs.gdax.com/#api).
+  # An [`HTTP::Client`](https://crystal-lang.org/api/HTTP/Client.html) for interacting with the [GDAX Client API](https://docs.gdax.com/#api).
+  # ```
+  # auth = GDAX::Auth.new ENV["CB-ACCESS-KEY"], ENV["API-SECRET"], ENV["PASSPHRASE"]
+  # client = GDAX::Client.new auth
+  
+  # client.get "/products/BTC-USD/trades" do |response|
+  #   success = true
+  # end
+  # ```
   class Client < HTTP::Client
 
-    # GDAX's API URL ()
+    # GDAX's API URL
     DEFAULT_PRODUCTION_HOST = "api.gdax.com"
 
     # GDAX's Sandbox API URL
@@ -69,7 +77,7 @@ module GDAX
     end
 
     # Returns authenticated headers; Placed on every request if `Client` is authenticated.
-    # all arguments are passed directly to `GDAX::Auth#signed_headers`
+    # All arguments are passed directly to `GDAX::Auth#signed_headers`.
     def authenticated_headers(
       request_path="", 
       body : String | Hash = "", 
@@ -81,8 +89,7 @@ module GDAX
       headers
     end
     
-
-
+    # Returns default host based on `production` argument.
     private def default_host(production)
       production ? DEFAULT_PRODUCTION_HOST : DEFAULT_SANDBOX_HOST
     end

@@ -23,20 +23,19 @@ describe GDAX::Client do
     client = GDAX::Client.new auth
 
     client.get "/products/BTC-USD/trades" do |response|
-      success = true
+      success = true      
     end
 
     sleep REQ_WAIT_TIME.seconds
     success.should be_true
   end
 
-
   it "Unauthenticated #get's" do
     success = false
     client = GDAX::Client.new
 
-    client.get "/orders?before=2&limit=30" do |response|
-      success = true
+    client.get "/products" do |response|
+      success = true      
     end
     sleep REQ_WAIT_TIME.seconds
     success.should eq true
@@ -45,6 +44,12 @@ describe GDAX::Client do
   it "#base_headers" do 
     client = GDAX::Client.new  
     ( client.base_headers.is_a? HTTP::Headers ).should be_true
+  end
+
+  it "#authenticated_headers" do  
+    auth = GDAX::Auth.new *auth_args
+    client = GDAX::Client.new auth
+    ( client.authenticated_headers.is_a? HTTP::Headers ).should be_true
   end
 
 end

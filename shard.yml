@@ -5,7 +5,7 @@ authors:
   - mccallofthewild <mccallalexander96@gmail.com>
 
 description: |
-  Use the GDAX API to trade blockchain cryptocurrencies like bitcoin, Litecoin and Ethereum.
+  📈 GDAX REST and WebSocket API wrapper to trade blockchain cryptocurrencies like bitcoin, Litecoin and Ethereum.
 
 crystal: 0.23.1
 
@@ -14,3 +14,4 @@ license: MIT
 dependencies:
   event_emitter:
     github: mccallofthewild/event_emitter.cr
+    version: "~> 0.1.0"

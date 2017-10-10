@@ -1,6 +1,6 @@
-# GDAX
+# 📈 GDAX
 
-A Crystal library for interacting with GDAX's Client and WebSocket API's.
+A Crystal library for interacting with [GDAX](https://www.gdax.com/)'s REST and WebSocket API's.
 
 ### Visit the [API Documentation](https://mccallofthewild.github.io/gdax/) for a more in-depth look at the library's functionality.
 
@@ -22,11 +22,47 @@ Begin by requiring `"gdax"`.
 require "gdax"
 ```
 
+### `GDAX::Client`
+> Interact with the GDAX REST API 
+
+`GDAX::Client` is derived from [HTTP::Client](https://crystal-lang.org/api/HTTP/Client.html). Use the inherited instance methods, `#get`, `#post`, `#put` and `#delete` to interact with GDAX's API. 
+Responses are instances of [HTTP::Client::Response](https://crystal-lang.org/api/HTTP/Client/Response.html).
+
+#### Basic
+To authenticate, pass named argument, `auth` to the `GDAX::WebSocket` with a `GDAX::Auth` instance.
+See [ _Authentication_ ](https://docs.gdax.com/#authentication) for help getting your `key`, `secret`, and `passphrase`.
+
+NOTE: For security purposes, it is recommended that you store your `key`, `secret`, and `passphrase` as environment variables.
+
+e.g.
+```crystal
+auth = GDAX::Auth.new ENV["CB-ACCESS-KEY"], ENV["API-SECRET"], ENV["PASSPHRASE"]
+client = GDAX::Client.new auth
+client.get "/products/BTC-USD/trades" do |response|
+  puts response.body_io.gets_to_end
+end
+```
+
+#### Unauthenticated
+To instantiate an unauthenticated `Client`, simply don't pass the `auth` argument.
+
+e.g.
+```crystal
+client = GDAX::Client.new
+client.get "/products" do |response|
+  puts response.body_io.gets_to_end
+end
+```
+
+See [the API Documentation](https://mccallofthewild.github.io/gdax/GDAX/Client.html) for more information on `GDAX::WebSocket`.
+
 ### `GDAX::WebSocket` 
 > Interact with the GDAX WebSocket Feed
 
 #### Basic 
 It's recommended that you [spawn a Fiber](https://crystal-lang.org/docs/guides/concurrency.html) around each `GDAX::WebSocket` you instantiate in order to achieve concurrency.
+
+The following setup will give you access to GDAX's public _ticker_ stream.
 ```crystal
 spawn do
   ws = GDAX::WebSocket.new production: true, subscription: {
@@ -82,7 +118,7 @@ It is possible to authenticate yourself when subscribing to the websocket feed. 
 To authenticate, pass named argument, `auth` to the `GDAX::WebSocket` with a `GDAX::Auth` instance.
 See [ _Authentication_ ](https://docs.gdax.com/#authentication) for help getting your `key`, `secret`, and `passphrase`.
 
-For security purposes, it is recommended that you store your `key`, `secret`, and `passphrase` as environment variables.
+NOTE: For security purposes, it is recommended that you store your `key`, `secret`, and `passphrase` as environment variables.
 
 ```crystal
 spawn do
@@ -100,7 +136,7 @@ spawn do
 end
 ```
 
-See [the API Documentation](https://github.com/mccallofthewild/gdax/GDAX/WebSocket.html) for more information on `GDAX::WebSocket`.
+See [the API Documentation](https://mccallofthewild.github.io/gdax/GDAX/WebSocket.html) for more information on `GDAX::WebSocket`.
 
 
 ## Contributing
