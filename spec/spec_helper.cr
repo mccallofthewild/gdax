@@ -5,6 +5,8 @@ require "../src/gdax"
 require "yaml"
 require "file"
 
+REQ_WAIT_TIME = 2
+
 Proc(Void).new do
 
   file_name = ".gdax_keys.yml"

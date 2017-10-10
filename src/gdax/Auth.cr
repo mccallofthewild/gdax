@@ -1,5 +1,6 @@
 require "base64"
 require "openssl/hmac"
+require "http"
 
 module GDAX
 
@@ -39,12 +40,23 @@ module GDAX
       Base64.strict_encode(hash)
     end
 
-    # Returns full, signed authentication object as a Hash
-    def obj(request_path="", body : String | Hash = "", timestamp : Int64 = Time.now.epoch, method="GET")
+    # Returns full, signed authentication object as a `Hash`.
+    def signed_hash(request_path="", body : String | Hash = "", timestamp : Int64 = Time.now.epoch, method="GET")
       return {
         "CB-ACCESS-KEY" => @key,
         "CB-ACCESS-PASSPHRASE" => @passphrase,
         "CB-ACCESS-TIMESTAMP" => timestamp,
+        "CB-ACCESS-SIGN" => signature request_path, body, timestamp, method
+      }
+    end
+
+    # Returns full, signed authentication object as a `HTTP::Headers` instance.
+    def signed_headers(request_path="", body : String | Hash = "", timestamp : Int64 = Time.now.epoch, method="GET")
+      auth_obj = self.signed_hash request_path, body, timestamp, method
+      HTTP::Headers{
+        "CB-ACCESS-KEY" => @key,
+        "CB-ACCESS-PASSPHRASE" => @passphrase,
+        "CB-ACCESS-TIMESTAMP" => timestamp.to_s,
         "CB-ACCESS-SIGN" => signature request_path, body, timestamp, method
       }
     end

@@ -49,13 +49,12 @@ module GDAX
     )
 
       if auth 
-        subscription = subscription.merge auth.obj request_path: "/users/self", method: "GET"
+        subscription = subscription.merge auth.signed_hash request_path: "/users/self", method: "GET"
       end
 
       @ws = HTTP::WebSocket.new uri, headers
 
       @ws.on_message do |message|
-        puts message
         handle_message message
       end
 

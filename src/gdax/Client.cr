@@ -2,26 +2,89 @@ require "http"
 
 module GDAX
 
-  # An `HTTP::Client` for interacting with the [GDAX REST API](https://docs.gdax.com/#api)
-  class REST < HTTP::Client
+  # An `HTTP::Client` for interacting with the [GDAX Client API](https://docs.gdax.com/#api).
+  class Client < HTTP::Client
 
     # GDAX's API URL ()
-    DEFAULT_PRODUCTION_HOST = "https://api.gdax.com"
+    DEFAULT_PRODUCTION_HOST = "api.gdax.com"
 
     # GDAX's Sandbox API URL
-    DEFAULT_SANDBOX_HOST = "https://api-public.sandbox.gdax.com"
+    DEFAULT_SANDBOX_HOST = "api-public.sandbox.gdax.com"
 
-
+    # A constructor for an authenticated client (for access to Private _and_ Public endpoints).
+    # `auth` is a `GDAX::Auth` instance containing your API keys.
     # `host` is the host uri string. This defaults to `DEFAULT_PRODUCTION_HOST` if `production` is not set to false.
     def initialize(
-      @host = default_host(),
-      production = true
+      @auth : GDAX::Auth,
+      production = true,
+      @host = default_host(production),
+      **args
     )
-      super @host
+
+      super(
+        **args,
+        host: @host,
+        tls: true
+      )
+
+      self.before_request do |request|
+
+        request.headers.merge! authenticated_headers(          
+          request_path: request.path,
+          body: request.body.to_s,
+          timestamp: Time.now.epoch,
+          method: request.method
+        )
+
+      end
+
     end
 
-    private def default_host
-      GDAX_ENV_PRODUCTION ? DEFAULT_PRODUCTION_HOST : DEFAULT_SANDBOX_HOST
+    # A constructor for an unauthenticated client (for access to Public endpoints only).
+    # `host` is the host uri string. This defaults to `DEFAULT_PRODUCTION_HOST` if `production` is not set to false.
+    def initialize(
+      production = true,
+      @host = default_host(production),
+      **args
+    )
+      super(
+        **args,
+        host: @host,
+        tls: true
+      )
+
+      @auth = GDAX::Auth.new "", "", ""
+
+      self.before_request do |request|
+        request.headers.merge! base_headers
+      end
+
+    end
+
+    # Returns standard, unauthenticated headers placed on every request.
+    def base_headers 
+      HTTP::Headers{
+        "Content-Type" => "application/json"
+      }
+    end
+
+    # Returns authenticated headers; Placed on every request if `Client` is authenticated.
+    # all arguments are passed directly to `GDAX::Auth#signed_headers`
+    def authenticated_headers(
+      request_path="", 
+      body : String | Hash = "", 
+      timestamp : Int64 = Time.now.epoch, 
+      method="GET"
+    )
+      headers = base_headers
+      headers.merge! @auth.signed_headers request_path, body, timestamp, method
+      headers
+    end
+    
+
+
+    private def default_host(production)
+      production ? DEFAULT_PRODUCTION_HOST : DEFAULT_SANDBOX_HOST
     end
 
   end

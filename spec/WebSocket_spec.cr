@@ -20,14 +20,13 @@ describe GDAX::WebSocket do
       end
 
       ws.on "ticker" do |data, event|
-        puts data["price"]
         ws.close
       end
 
       ws.run
     end
 
-    sleep 3.seconds
+    sleep REQ_WAIT_TIME.seconds
 
 
     message_recieved.should eq true
@@ -51,10 +50,12 @@ describe GDAX::WebSocket do
         ws.close
         socket_closed = ws.closed?        
       end
+      
       ws.run
     end
 
-    sleep 3.seconds
+    sleep REQ_WAIT_TIME.seconds
+
     ( message_recieved && socket_closed ).should eq true
   end
 

@@ -1,6 +1,6 @@
 # GDAX
 
-A Crystal library for interacting with GDAX's REST and WebSocket API's.
+A Crystal library for interacting with GDAX's Client and WebSocket API's.
 
 ### Visit the [API Documentation](https://mccallofthewild.github.io/gdax/) for a more in-depth look at the library's functionality.
 
@@ -82,13 +82,13 @@ It is possible to authenticate yourself when subscribing to the websocket feed. 
 To authenticate, pass named argument, `auth` to the `GDAX::WebSocket` with a `GDAX::Auth` instance.
 See [ _Authentication_ ](https://docs.gdax.com/#authentication) for help getting your `key`, `secret`, and `passphrase`.
 
-It is recommended that you store your `key`, `secret`, and `passphrase` as environment variables.
+For security purposes, it is recommended that you store your `key`, `secret`, and `passphrase` as environment variables.
 
 ```crystal
 spawn do
   auth = GDAX::Auth.new key: ENV["CB-ACCESS-KEY"], secret: ENV["API-SECRET"], passphrase: ENV["PASSPHRASE"]
 
-  ws = GDAX::WebSocket.new production: true, subscription: {
+  ws = GDAX::WebSocket.new production: true, subscription: {  
     "type" => "subscribe",
     "channels" => [{ "name" => "ticker", "product_ids" => ["ETH-EUR"] }]
   }, auth: auth
@@ -99,8 +99,6 @@ spawn do
   ws.run
 end
 ```
-
-
 
 See [the API Documentation](https://github.com/mccallofthewild/gdax/GDAX/WebSocket.html) for more information on `GDAX::WebSocket`.
 
