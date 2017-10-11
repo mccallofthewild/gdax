@@ -1,12 +1,15 @@
 language: crystal
 script:
-  - crystal spec
-  - crystal docs
+- crystal spec
+- crystal docs
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $GITHUB_TOKEN
+  github_token: "$GITHUB_TOKEN"
   project_name: gdax
   on:
     branch: master
   local_dir: doc
+before_install:
+- openssl aes-256-cbc -K $encrypted_24fda42736ce_key -iv $encrypted_24fda42736ce_iv
+  -in .gdax_keys.yml.enc -out .gdax_keys.yml -d
