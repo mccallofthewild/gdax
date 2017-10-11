@@ -2,6 +2,10 @@
 
 A Crystal library for interacting with [GDAX](https://www.gdax.com/)'s REST and WebSocket API's.
 
+
+[![Build Status](https://travis-ci.org/mccallofthewild/gdax.svg?branch=master)](https://travis-ci.org/mccallofthewild/gdax) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://mccallofthewild.github.io/gdax/) [![GitHub release](https://img.shields.io/github/release/mccallofthewild/gdax.svg)](https://github.com/mccallofthewild/markov/releases)
+
+
 ### Visit the [API Documentation](https://mccallofthewild.github.io/gdax/) for a more in-depth look at the library's functionality.
 
 ## Installation
