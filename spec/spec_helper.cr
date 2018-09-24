@@ -14,14 +14,16 @@ Proc(Void).new do
   if File.exists?(file_name)
     contents = File.read(file_name)
     result = YAML.parse(contents)
-    ENV["GDAX_KEYS"] = result.as_h.to_json
-  else
-    ENV["GDAX_KEYS"] = {
-      "CB-ACCESS-KEY" => ENV["CB-ACCESS-KEY"],
-      "API-SECRET" => ENV["API-SECRET"],
-      "PASSPHRASE" => ENV["PASSPHRASE"]
-    }.to_json
+    ENV["CB-ACCESS-KEY"] = result["CB-ACCESS-KEY"].as_s?
+    ENV["API-SECRET"] = result["API-SECRET"].as_s?
+    ENV["PASSPHRASE"] = result["PASSPHRASE"].as_s?
   end
+  
+  ENV["GDAX_KEYS"] = {
+    "CB-ACCESS-KEY" => ENV["CB-ACCESS-KEY"],
+    "API-SECRET" => ENV["API-SECRET"],
+    "PASSPHRASE" => ENV["PASSPHRASE"]
+  }.to_json
 
   
 end.call
