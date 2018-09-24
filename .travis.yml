@@ -9,7 +9,7 @@ deploy:
   project_name: gdax
   on:
     branch: master
-  local_dir: docs 
+  local_dir: docs
 before_install:
 - openssl aes-256-cbc -K $encrypted_24fda42736ce_key -iv $encrypted_24fda42736ce_iv
   -in .gdax_keys.yml.enc -out .gdax_keys.yml -d
