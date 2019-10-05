@@ -18,7 +18,7 @@ module GDAX
   #
   # ws.run
   # ```
-  class WebSocket
+  class WebSocket < EventEmitter::Base
     
     # GDAX's API URL
     DEFAULT_PRODUCTION_HOST = "wss://ws-feed.gdax.com"
@@ -29,7 +29,7 @@ module GDAX
     # The unsplatted arguments an event listener can accept.
     alias EmitArgType = Tuple(JSON::Any, String)
 
-    @emitter = EventEmitter::Base( String, EmitArgType ).new
+    # @emitter = EventEmitter::Base.new
     
     # `subscription` is your [ _GDAX Subscribe Request_ ](https://docs.gdax.com/#subscribe) in the form of a `Hash`.
     # 
@@ -85,24 +85,6 @@ module GDAX
         on_close.call close_message 
       end
     end
-
-    # Adds event listener for events based on [ _GDAX's message `type`'s_ ](https://docs.gdax.com/#protocol-overview).
-    # Takes in `String` of the event to listen for and a block to run when the event fires.
-    # The block is passed two arguments: the first being the `JSON::Any` response data from GDAX, and the second being the event itself.
-    # e.g.
-    # ```crystal
-    # ws.on "subscriptions" do |data, event|
-    #   message_recieved = true
-    # end
-    # ```
-    def on(event : String, &block : Proc(
-      *EmitArgType,
-      Void
-    ))
-      @emitter.on event, ->(x : EmitArgType) do 
-        block.call(*x)
-      end
-    end
     
 
     # Returns host to default to depending on environment
@@ -115,14 +97,10 @@ module GDAX
       json_data = JSON.parse(message)
       gdax_event = json_data["type"].as_s
       
-      @emitter.emit gdax_event, {
-        json_data,
-        gdax_event
-      }
+      self.emit gdax_event, json_data
       if gdax_event == "error" 
         raise GDAX::Exceptions::ResponseException.new message: json_data["message"].as_s
       end
     end
-    
   end
 end
