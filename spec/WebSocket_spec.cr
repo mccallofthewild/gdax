@@ -20,12 +20,12 @@ describe GDAX::WebSocket do
         "channels" => [{ "name" => "ticker", "product_ids" => ["ETH-EUR"] }]
       }
 
-      ws.on "subscriptions" do |data, event|
+      ws.on "subscriptions" do |data|
         message_recieved = true
         socket_closed = ws.closed?
       end
 
-      ws.on "ticker" do |data, event|
+      ws.on "ticker" do |data|
         ws.close
         closed_method_result = !!ws.closed?
       end
@@ -76,7 +76,7 @@ describe GDAX::WebSocket do
         "channels" => [{ "name" => "ticker", "product_ids" => ["ETH-EUR"] }]
       }, auth: auth
 
-      ws.on "subscriptions" do |data, event|
+      ws.on "subscriptions" do |data|
         message_recieved = true
         ws.close
         socket_closed = ws.closed?        

@@ -40,7 +40,7 @@ module GDAX
         request.headers.merge! authenticated_headers(          
           request_path: request.path,
           body: request.body.to_s,
-          timestamp: Time.now.epoch,
+          timestamp: Time.now.to_unix,
           method: request.method
         )
 
@@ -81,7 +81,7 @@ module GDAX
     def authenticated_headers(
       request_path="", 
       body : String | Hash = "", 
-      timestamp : Int64 = Time.now.epoch, 
+      timestamp : Int64 = Time.now.to_unix,
       method="GET"
     )
       headers = base_headers

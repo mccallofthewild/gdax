@@ -30,7 +30,7 @@ module GDAX
     # `method` is a String of the request method. e.g. `"POST"`
     def signature(request_path="", body : String | Hash = "", timestamp : Int64 | Nil = nil, method="GET") : String
       body = body.to_json if body.is_a?(Hash)
-      timestamp = Time.now.epoch if !timestamp
+      timestamp = Time.now.to_unix if !timestamp
 
       what = "#{timestamp}#{method}#{request_path}#{body}";
 
@@ -41,7 +41,7 @@ module GDAX
     end
 
     # Returns full, signed authentication object as a `Hash`.
-    def signed_hash(request_path="", body : String | Hash = "", timestamp : Int64 = Time.now.epoch, method="GET")
+    def signed_hash(request_path="", body : String | Hash = "", timestamp : Int64 = Time.now.to_unix, method="GET")
       return {
         "CB-ACCESS-KEY" => @key,
         "CB-ACCESS-PASSPHRASE" => @passphrase,
@@ -51,7 +51,7 @@ module GDAX
     end
 
     # Returns full, signed authentication object as a `HTTP::Headers` instance.
-    def signed_headers(request_path="", body : String | Hash = "", timestamp : Int64 = Time.now.epoch, method="GET")
+    def signed_headers(request_path="", body : String | Hash = "", timestamp : Int64 = Time.now.to_unix, method="GET")
       auth_obj = self.signed_hash request_path, body, timestamp, method
       HTTP::Headers{
         "CB-ACCESS-KEY" => @key,

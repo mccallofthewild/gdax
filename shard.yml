@@ -13,5 +13,5 @@ license: MIT
 
 dependencies:
   event_emitter:
-    github: mccallofthewild/event_emitter.cr
-    version: "~> 0.1.0"
+    github: hugoabonizio/event_emitter.cr
+    branch: master
